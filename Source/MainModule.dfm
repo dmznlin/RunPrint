@@ -1,6 +1,7 @@
 object UniMainModule: TUniMainModule
   OldCreateOrder = False
   OnCreate = UniGUIMainModuleCreate
+  TouchTheme = 'neptune'
   MonitoredKeys.Keys = <>
   Height = 249
   Width = 440

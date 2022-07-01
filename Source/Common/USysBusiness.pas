@@ -12,7 +12,7 @@ uses
   System.Variants, Data.DB, Vcl.Controls, Vcl.Forms, Vcl.Graphics, Vcl.Menus,
   //----------------------------------------------------------------------------
   uniGUIAbstractClasses, uniGUITypes, uniGUIClasses, uniGUIBaseClasses,
-  uniTreeView, uniGUImForm, uniImage, MainModule, UFormBase,
+  uniTreeView, uniGUImForm, unimImage, MainModule, UFormBase, UFrameBase,
   uniPageControl,
   //----------------------------------------------------------------------------
   UBaseObject, UManagerGroup, ULibFun, USysConst;
@@ -31,6 +31,8 @@ type
     class var
       Forms: array of TfFormClass;
       {*窗体列表*}
+      Frames: array of TfFrameClass;
+      {*框架列表*}
   public
     class procedure Init(const nForce: Boolean = False); static;
     {*初始化*}
@@ -47,6 +49,7 @@ type
       const nFrom: string = '\'; const nTo: string = '/'): string; static;
     {*切换路径分隔符*}
     class procedure AddForm(const nForm: TfFormClass); static;
+    class procedure AddFrame(const nFrame: TfFrameClass); static;
     {*注册窗体类*}
     class function GetForm(const nClass: string;
       const nException: Boolean = False): TUnimForm; static;
@@ -56,13 +59,16 @@ type
       const nResult: TFormModalResult = nil;
       const nDisplayForm: Boolean = True); static;
     {*显示模式窗体*}
+    class procedure ShowFrame(const nClass: string;const nParent: TUniContainer;
+      const nParams: PCommandParam = nil); static;
+    {*显示Frame框架*}
     class function UserFile(const nType: TUserFileType;
       const nRelative: Boolean = True;
       const nForceRefresh: Boolean = False): string; static;
     class function UserConfigFile: TIniFile; static;
     {*用户私有文件*}
     class procedure SetImageData(const nParent: TUniContainer;
-      const nImage: TUniImage; const nData: PImageData); static;
+      const nImage: TUnimImage; const nData: PImageData); static;
     {*设置图片数据*}
     class procedure InitDateRange(const nForm,nCtrl: string; var nS,nE: TDateTime;
       nIni: TIniFile = nil); static;
@@ -260,7 +266,7 @@ end;
 //Parm: 父容器;图片;数据
 //Desc: 依据nData设置nImage属性
 class procedure TWebSystem.SetImageData(const nParent: TUniContainer;
-  const nImage: TUniImage; const nData: PImageData);
+  const nImage: TUnimImage; const nData: PImageData);
 begin
   with nImage do
   begin
@@ -372,6 +378,29 @@ begin
   //new class
 end;
 
+//Date: 2021-06-28
+//Parm: 框架类
+//Desc: 注册框架类
+class procedure TWebSystem.AddFrame(const nFrame: TfFrameClass);
+var nStr: string;
+    nIdx: Integer;
+begin
+  for nIdx := Low(Frames) to High(Frames) do
+  if Frames[nIdx] = nFrame then
+  begin
+    nStr := Format('TSysFun.AddFrame: %s Has Exists.', [nFrame.ClassName]);
+    gMG.WriteLog(TWebSystem, 'Web系统对象', nStr);
+    raise Exception.Create(nStr);
+  end;
+
+  nIdx := Length(Frames);
+  SetLength(Frames, nIdx + 1);
+  Frames[nIdx] := nFrame;
+
+  RegisterClass(nFrame);
+  //new class
+end;
+
 //Date: 2021-04-26
 //Parm: 窗体类名
 //Desc: 获取nClass类的对象
@@ -437,6 +466,28 @@ begin
         //xxxxx
       end);
   end;
+end;
+
+//Date: 2022-07-01
+//Parm:Frame类;父容器;输入参数
+//Desc:在nParent上创建Frame框架
+class procedure TWebSystem.ShowFrame(const nClass: string;
+  const nParent: TUniContainer; const nParams: PCommandParam);
+var nIdx: Integer;
+    nNew: TfFrameBase;
+    nFrame: TfFrameClass;
+begin
+  nFrame := TfFrameClass(GetClass(nClass));
+  for nIdx := nParent.ControlCount-1 downto 0 do
+   if nParent.Controls[nIdx] is nFrame then
+   begin
+     nParent.Controls[nIdx].BringToFront;
+     Exit;
+   end;
+
+  nNew := nFrame.Create(nParent);
+  nNew.Parent := nParent;
+  nNew.Align := alClient;
 end;
 
 initialization

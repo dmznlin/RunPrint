@@ -1,0 +1,42 @@
+﻿/* ++++++++++++++++++++++++++++++++ 特殊边框 ++++++++++++++++++++++++++++++++ */
+.x-panel-border-none /*border: none*/
+{
+  border-color:transparent transparent transparent transparent;
+  /*顺序: 上 右 下 左*/
+}
+.x-panel-border-top /*border: only top*/
+{
+  border-color:#99bbe8 transparent transparent transparent;
+}
+.x-panel-border-right /*border: only right*/
+{
+  border-color:transparent #99bbe8 transparent transparent;
+}
+.x-panel-border-bottom /*border: only bottom*/
+{
+  border-color:transparent transparent #99bbe8 transparent;
+}
+.x-panel-border-left /*border: only left*/
+{
+  border-color:transparent transparent transparent #99bbe8;
+}
+.x-panel-border-topbottom /*border: top bottom*/
+{
+  border-color:#99bbe8 transparent #99bbe8 transparent;
+}
+.x-panel-border-leftright /*border: left right*/
+{
+  border-color:transparent #99bbe8 transparent #99bbe8;
+}
+/* ++++++++++++++++++++++++++++++++ 背景图片 ++++++++++++++++++++++++++++++++ */
+.x-panel-pagesheet{
+  background:url('/images/bg_login.png') repeat;
+  /*background-size:100% 100%;*/
+  opacity:0.7; 
+}
+
+.x-panel-center{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

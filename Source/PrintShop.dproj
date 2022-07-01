@@ -133,6 +133,11 @@
             <FormType>dfm</FormType>
             <DesignClass>TUnimForm</DesignClass>
         </DCCReference>
+        <DCCReference Include="Forms\UFrameBase.pas">
+            <Form>fFrameBase</Form>
+            <FormType>dfm</FormType>
+            <DesignClass>TUniFrame</DesignClass>
+        </DCCReference>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
